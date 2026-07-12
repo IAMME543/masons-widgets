@@ -1,8 +1,19 @@
+/* TODO
+
+ - find a way to select widgets from widgets folder and set to specific position in grid.
+ - Make some widgets
+ - interactive non technical way to move, configure and add widgets
+
+*/
+
+
+
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
 import GLib from 'gi://GLib';
 import St from 'gi://St';
 import Clutter from 'gi://Clutter';
+import DesktopWidget from './widgets/widget.js';
 
 export default class DesktopWidgetsExtension extends Extension {
     constructor(metadata) {
@@ -103,11 +114,12 @@ export default class DesktopWidgetsExtension extends Extension {
 
         for (let i = 0; i < columns; i++) {
             for (let j = 0; j < rows; j++) {
-                layout.attach(new St.Widget({
-                    style: 'background: red;',
-                    width: widget_size,
-                    height: widget_size,
-                }), i, j, 1, 1)
+                // layout.attach(new St.Widget({
+                //     style: 'background: red;',
+                //     width: widget_size,
+                //     height: widget_size,
+                // }), i, j, 1, 1)
+                layout.attach(new DesktopWidget(widget_size, widget_size), i, j, 1, 1)
             }
 
         }
