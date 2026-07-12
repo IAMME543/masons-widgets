@@ -1,18 +1,35 @@
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
 import GLib from 'gi://GLib';
 import St from 'gi://St';
 import Clutter from 'gi://Clutter';
 
-export default class DesktopWidgetsExtension {
-    constructor() {
+export default class DesktopWidgetsExtension extends Extension {
+    constructor(metadata) {
+        super(metadata);
+
         this.grid = null;
+        this.settings = null;
         this._monitorChangedId = null;
     }
     enable() {
+        this.settings = this.getSettings()
         this._monitorChangedId = Main.layoutManager.connect(
             'monitors-changed',
             () => {
                 this.buildGrid();
+            }
+        );
+
+        this._settingsChangedId = this.settings.connect(
+            'changed',
+            (settings, key) => {
+                console.log(`Setting changed: ${key}`);
+                try {
+                    this.buildGrid();
+                } catch (e) {
+                    console.error(e);
+                }
             }
         );
 
@@ -25,23 +42,28 @@ export default class DesktopWidgetsExtension {
             Main.layoutManager.disconnect(this._monitorChangedId);
             this._monitorChangedId = null;
         }
+        if (this._settingsChangedId) {
+            this.settings.disconnect(this._settingsChangedId);
+            this._settingsChangedId = null;
+        }
 
         if (this.grid) {
             this.grid.destroy();
             this.grid = null;
         }
+        this.grid = null;
+        this.settings = null;
+        this._monitorChangedId = null;
     }
 
     buildGrid() {
-        const outer_spacing = 20; //px
-        const inner_spacing = 10; //px
-        const widget_size = 200; //px
+        console.log("BUILD GRID CALLED");
 
-        // make sure it doesnt exist before we start making it
-        if (this.grid) {
-            this.grid.destroy();
-            this.grid = null;
-        }
+        const outer_spacing = this.settings.get_int("outer-spacing");
+        const inner_spacing = this.settings.get_int("inner-spacing");
+        const widget_size = this.settings.get_int("widget-size");
+
+
 
 
 
@@ -58,21 +80,22 @@ export default class DesktopWidgetsExtension {
 
 
         /*  */
+        let new_grid;
 
-        this.grid = new St.Widget({
+        new_grid = new St.Widget({
             layout_manager: new Clutter.GridLayout(),
         });
-        this.grid.set_position(
+        new_grid.set_position(
             work_area.x + outer_spacing,
             work_area.y + outer_spacing
         );
 
-        this.grid.set_size(
+        new_grid.set_size(
             columns * widget_size + (columns - 1) * inner_spacing,
             rows * widget_size + (rows - 1) * inner_spacing
         );
 
-        let layout = this.grid.layout_manager;
+        let layout = new_grid.layout_manager;
         layout.set_column_homogeneous(true);
         layout.set_row_homogeneous(true);
         layout.set_column_spacing(inner_spacing);
@@ -87,6 +110,15 @@ export default class DesktopWidgetsExtension {
                 }), i, j, 1, 1)
             }
 
+        }
+
+
+
+        if (new_grid) {
+            if (this.grid)
+                this.grid.destroy();
+
+            this.grid = new_grid;
         }
 
         Main.layoutManager._backgroundGroup.add_child(this.grid);
