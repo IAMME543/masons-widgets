@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema
+    id="org.gnome.shell.extensions.masons-widgets"
+    path="/org/gnome/shell/extensions/masons-widgets/">
+
+    <key name="widget-size" type="i">
+      <default>200</default>
+      <summary>Widget size</summary>
+      <description>Size of each widget cell.</description>
+    </key>
+
+    <key name="inner-spacing" type="i">
+      <default>10</default>
+      <summary>The spacing between widgets.</summary>
+    </key>
+        <key name="outer-spacing" type="i">
+      <default>20</default>
+      <summary>The spacing between the widget grid and the edge of the screen.</summary>
+    </key>
+
+  </schema>
+</schemalist>

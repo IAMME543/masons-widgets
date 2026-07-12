@@ -1,0 +1,10 @@
+{
+    "uuid": "masons-widgets@masondoesthings.com",
+    "name": "Masons Widgets",
+    "description": "Desktop widgets for GNOME",
+    "shell-version": [
+        "50"
+    ],
+    "version": 50,
+    "settings-schema": "org.gnome.shell.extensions.masons-widgets"
+}
