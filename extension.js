@@ -13,7 +13,7 @@ import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
 import GLib from 'gi://GLib';
 import St from 'gi://St';
 import Clutter from 'gi://Clutter';
-import DesktopWidget from './widgets/widget.js';
+import BlurredAnalogClock from './widgets/BlurredAnalogClock.js';
 
 export default class DesktopWidgetsExtension extends Extension {
     constructor(metadata) {
@@ -119,7 +119,7 @@ export default class DesktopWidgetsExtension extends Extension {
                 //     width: widget_size,
                 //     height: widget_size,
                 // }), i, j, 1, 1)
-                layout.attach(new DesktopWidget(widget_size, widget_size), i, j, 1, 1)
+                layout.attach(new BlurredAnalogClock(widget_size, widget_size), i, j, 1, 1)
             }
 
         }
