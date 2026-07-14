@@ -20,7 +20,7 @@ export default class DesktopWidgetsExtension extends Extension {
         this.grid = null;
         this.settings = null;
         this._monitorChangedId = null;
-        this.widget_registry = new WidgetRegistry(this.path)
+        this.widget_registry = new WidgetRegistry(this.path, this.getSettings())
     }
     enable() {
 
@@ -110,17 +110,33 @@ export default class DesktopWidgetsExtension extends Extension {
         layout.set_column_spacing(inner_spacing);
         layout.set_row_spacing(inner_spacing);
 
-        const clock = await this.widget_registry.load("analog-clock")
 
+
+        const active_widgets = this.widget_registry.GetActive();
+
+        for (const widget of active_widgets) {
+            const widget_from_reg = this.widget_registry.get(widget.id);
+            console.log(widget_from_reg);
+
+
+            const widget_class = await this.widget_registry.load(widget_from_reg.metadata.id);
+
+
+            layout.attach(
+                new widget_class(widget_size, widget_size),
+                widget.x,
+                widget.y,
+                1,
+                1
+            );
+        }
         for (let i = 0; i < columns; i++) {
             for (let j = 0; j < rows; j++) {
-                // layout.attach(new St.Widget({
-                //     style: 'background: red;',
-                //     width: widget_size,
-                //     height: widget_size,
-                // }), i, j, 1, 1)
 
-                layout.attach(new clock(widget_size, widget_size), i, j, 1, 1)
+                if (!active_widgets.some(w => w.x === x && w.y === y)) {
+                    const empty = new St.Widget();
+                    layout.attach(empty, i, j, 1, 1)
+                }
             }
 
         }

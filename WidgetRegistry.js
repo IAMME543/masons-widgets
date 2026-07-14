@@ -2,9 +2,14 @@ import GLib from 'gi://GLib';
 import Gio from 'gi://Gio';
 
 export default class WidgetRegistry {
-    constructor(extension_path) {
+    constructor(extension_path, settings) {
         this.extension_path = extension_path;
-        this._registry = this._GetAvailableWidgets()
+        this._registry = this._GetAvailableWidgets();
+        this.settings = settings;
+    }
+
+    GetActive() {
+        return JSON.parse(this.settings.get_string("widget-layout"));
     }
 
     get(id) {

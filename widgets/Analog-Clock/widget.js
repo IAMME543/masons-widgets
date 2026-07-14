@@ -21,7 +21,7 @@ export default GObject.registerClass(
 
             // Background
             if (!this.disable_background) {
-                cr.setSourceRGBA(0.1, 0.1, 0.1, 0.3);
+                cr.setSourceRGBA(0.1, 0.1, 0.1, 0.6);
                 cr.arc(cx, cy, r, 0, Math.PI * 2);
                 cr.fill();
             }
