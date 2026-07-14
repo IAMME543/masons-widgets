@@ -1,7 +1,7 @@
 import GObject from 'gi://GObject';
 import GLib from 'gi://GLib';
 import St from 'gi://St';
-import DrawingWidget from './DrawingWidget.js';
+import DrawingWidget from '../Base-Drawing-Widget/widget.js';
 
 export default GObject.registerClass(
     class AnalogClock extends DrawingWidget {

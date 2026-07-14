@@ -1,0 +1,7 @@
+{
+    "id": "blurred-analog-clock",
+    "name": "Blurred Analog Clock",
+    "author": "Mason",
+    "version": 1,
+    "dependencies": "analog-clock"
+}

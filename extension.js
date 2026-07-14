@@ -6,29 +6,29 @@
 
 */
 
-
-
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
 import GLib from 'gi://GLib';
 import St from 'gi://St';
 import Clutter from 'gi://Clutter';
-import BlurredAnalogClock from './widgets/BlurredAnalogClock.js';
+import Gio from 'gi://Gio'
+import WidgetRegistry from './WidgetRegistry.js';
 
 export default class DesktopWidgetsExtension extends Extension {
     constructor(metadata) {
         super(metadata);
-
         this.grid = null;
         this.settings = null;
         this._monitorChangedId = null;
+        this.widget_registry = new WidgetRegistry(this.path)
     }
     enable() {
+
         this.settings = this.getSettings()
         this._monitorChangedId = Main.layoutManager.connect(
             'monitors-changed',
             () => {
-                this.buildGrid();
+                this.buildGrid().catch(console.error);
             }
         );
 
@@ -44,7 +44,7 @@ export default class DesktopWidgetsExtension extends Extension {
             }
         );
 
-        this.buildGrid();
+        this.buildGrid().catch(console.error);
 
     }
 
@@ -67,14 +67,12 @@ export default class DesktopWidgetsExtension extends Extension {
         this._monitorChangedId = null;
     }
 
-    buildGrid() {
+    async buildGrid() {
         console.log("BUILD GRID CALLED");
 
         const outer_spacing = this.settings.get_int("outer-spacing");
         const inner_spacing = this.settings.get_int("inner-spacing");
         const widget_size = this.settings.get_int("widget-size");
-
-
 
 
 
@@ -112,6 +110,8 @@ export default class DesktopWidgetsExtension extends Extension {
         layout.set_column_spacing(inner_spacing);
         layout.set_row_spacing(inner_spacing);
 
+        const clock = await this.widget_registry.load("analog-clock")
+
         for (let i = 0; i < columns; i++) {
             for (let j = 0; j < rows; j++) {
                 // layout.attach(new St.Widget({
@@ -119,7 +119,8 @@ export default class DesktopWidgetsExtension extends Extension {
                 //     width: widget_size,
                 //     height: widget_size,
                 // }), i, j, 1, 1)
-                layout.attach(new BlurredAnalogClock(widget_size, widget_size), i, j, 1, 1)
+
+                layout.attach(new clock(widget_size, widget_size), i, j, 1, 1)
             }
 
         }
@@ -136,4 +137,5 @@ export default class DesktopWidgetsExtension extends Extension {
         Main.layoutManager._backgroundGroup.add_child(this.grid);
         console.log("DESKTOP WIDGET ENABLE CALLED");
     }
+
 }

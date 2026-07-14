@@ -4,8 +4,8 @@ Need to make a circular mask for clutter effect
 */
 
 import GObject from 'gi://GObject';
-import AnalogClock from "./AnalogClock.js";
-import DesktopWidget from "./DesktopWidget.js";
+import AnalogClock from "../Analog-Clock/widget.js";
+import DesktopWidget from "../Base-Desktop-Widget/widget.js";
 import Clutter from 'gi://Clutter';
 import St from 'gi://St';
 import Shell from 'gi://Shell';
