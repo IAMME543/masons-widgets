@@ -128,19 +128,27 @@ export default class DesktopWidgetsExtension extends Extension {
             widget_instance.set_y_expand(false);
             widget_instance.set_x_align(Clutter.ActorAlign.CENTER);
             widget_instance.set_y_align(Clutter.ActorAlign.CENTER);
+            let x = Math.min(widget.x, columns - 1);
+            let y = Math.min(widget.y, rows - 1);
 
             layout.attach(
                 widget_instance,
-                widget.x,
-                widget.y,
-                1,
-                1
+                x,
+                y,
+                widget.w,
+                widget.h
             );
         }
         for (let i = 0; i < columns; i++) {
             for (let j = 0; j < rows; j++) {
 
-                if (!active_widgets.some(w => w.x === i && w.y === j)) {
+                const isSpaceTaken = active_widgets.some(w => {
+                    let clampedX = Math.min(w.x, columns - 1);
+                    let clampedY = Math.min(w.y, rows - 1);
+                    return clampedX === i && clampedY === j;
+                });
+
+                if (!isSpaceTaken) {
                     const empty = new St.Widget({
                         // uncomment for debug
                         // width: 300,
@@ -151,10 +159,9 @@ export default class DesktopWidgetsExtension extends Extension {
                         // x_align: Clutter.ActorAlign.CENTER,
                         // y_align: Clutter.ActorAlign.CENTER
                     });
-                    layout.attach(empty, i, j, 1, 1)
+                    layout.attach(empty, i, j, 1, 1);
                 }
             }
-
         }
 
         if (this.grid) {
