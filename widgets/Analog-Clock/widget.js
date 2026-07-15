@@ -17,7 +17,7 @@ export default GObject.registerClass(
             const h = this.height;
             const cx = w / 2;
             const cy = h / 2;
-            const r = Math.min(w, h) * 0.45;
+            const r = Math.min(w, h) * 0.5;
 
             // Background
             if (!this.disable_background) {
