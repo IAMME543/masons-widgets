@@ -4,13 +4,12 @@ Custom extendable desktop widget extention for Gnome.
 **In Development**
 
 # TODO
-* find a way to select widgets from widgets folder and set to specific position in grid.
 * Make some widgets
 * interactive non technical way to move, configure and add widgets
 
 
 # Making Widgets
-create a javascript file in `/.widgets` and extend the `DesktopWidget` class. Overide `vfunc_repaint` to create the contents of the widget using cairo. `vfunc_destroy` is also overidable if content is created outside of the widget actor.
+create a javascript file in `~/.local/share/gnome-shell/extensions/masons-widgets@masondoesthings.com/widgets` and extend the `DesktopWidget` class. Overide `vfunc_repaint` to create the contents of the widget using cairo. `vfunc_destroy` is also overidable if content is created outside of the widget actor.
 
 # Contributing
 If you wanna go ahead. 
