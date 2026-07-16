@@ -8,9 +8,7 @@ export default class WidgetRegistry {
         this.settings = settings;
     }
 
-    GetActive() {
-        return JSON.parse(this.settings.get_string("widget-layout"));
-    }
+
 
     get(id) {
         return this._registry.get(id)

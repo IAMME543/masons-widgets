@@ -10,6 +10,7 @@ import St from 'gi://St';
 import Clutter from 'gi://Clutter';
 import Gio from 'gi://Gio'
 import WidgetRegistry from './WidgetRegistry.js';
+import WidgetLayout from './WidgetLayout.js';
 
 export default class DesktopWidgetsExtension extends Extension {
     constructor(metadata) {
@@ -17,11 +18,13 @@ export default class DesktopWidgetsExtension extends Extension {
         this.grid = null;
         this.settings = null;
         this._monitorChangedId = null;
-        this.widget_registry = new WidgetRegistry(this.path, this.getSettings())
+        this.widget_registry = null;
+        this.widget_layout = null;
     }
     enable() {
-
         this.settings = this.getSettings()
+        this.widget_registry = new WidgetRegistry(this.path, this.settings)
+        this.widget_layout = new WidgetLayout(this.settings)
         this._monitorChangedId = Main.layoutManager.connect(
             'monitors-changed',
             () => {
@@ -113,7 +116,7 @@ export default class DesktopWidgetsExtension extends Extension {
 
 
 
-        const active_widgets = this.widget_registry.GetActive();
+        const active_widgets = this.widget_layout.GetActive();
 
         for (const widget of active_widgets) {
             const widget_from_reg = this.widget_registry.get(widget.id);

@@ -6,5 +6,6 @@
         "50"
     ],
     "version": 50,
-    "settings-schema": "org.gnome.shell.extensions.masons-widgets"
+    "settings-schema": "org.gnome.shell.extensions.masons-widgets",
+    "url": "https://github.com/IAMME543/masons-widgets/"
 }
