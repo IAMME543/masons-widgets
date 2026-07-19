@@ -1,3 +1,5 @@
+"use strict";
+
 import GObject from 'gi://GObject';
 import GLib from 'gi://GLib';
 import St from 'gi://St';
@@ -74,6 +76,5 @@ export default GObject.registerClass(
             cr.arc(cx, cy, 4, 0, Math.PI * 2);
             cr.fill();
 
-            cr.$dispose();
         }
     });

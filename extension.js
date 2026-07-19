@@ -2,6 +2,7 @@
  - Make some widgets
  - interactive non technical way to move, configure and add widgets
 */
+"use strict";
 
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
@@ -15,16 +16,30 @@ import WidgetLayout from './WidgetLayout.js';
 export default class DesktopWidgetsExtension extends Extension {
     constructor(metadata) {
         super(metadata);
+
         this.grid = null;
         this.settings = null;
-        this._monitorChangedId = null;
         this.widget_registry = null;
         this.widget_layout = null;
+
+        this._monitorChangedId = null;
+        this._settingsChangedId = null;
+
+        this._enabled = false;
+        this._buildGeneration = 0;
     }
+
     enable() {
-        this.settings = this.getSettings()
-        this.widget_registry = new WidgetRegistry(this.path, this.settings)
-        this.widget_layout = new WidgetLayout(this.settings)
+        this._enabled = true;
+        this._buildGeneration++;
+
+        this.settings = this.getSettings();
+        this.widget_registry = new WidgetRegistry(
+            this.path,
+            this.settings
+        );
+        this.widget_layout = new WidgetLayout(this.settings);
+
         this._monitorChangedId = Main.layoutManager.connect(
             'monitors-changed',
             () => {
@@ -34,21 +49,18 @@ export default class DesktopWidgetsExtension extends Extension {
 
         this._settingsChangedId = this.settings.connect(
             'changed',
-            (settings, key) => {
-                console.log(`Setting changed: ${key}`);
-                try {
-                    this.buildGrid();
-                } catch (e) {
-                    console.error(e);
-                }
+            () => {
+                this.buildGrid().catch(console.error);
             }
         );
 
         this.buildGrid().catch(console.error);
-
     }
 
     disable() {
+        this._enabled = false;
+        this._buildGeneration++;
+
         if (this._settingsChangedId) {
             this.settings.disconnect(this._settingsChangedId);
             this._settingsChangedId = null;
@@ -60,19 +72,23 @@ export default class DesktopWidgetsExtension extends Extension {
         }
 
         if (this.grid) {
-            if (this.grid.get_parent()) {
-                this.grid.get_parent().remove_child(this.grid);
-            }
             this.grid.destroy();
             this.grid = null;
         }
 
         this.settings = null;
         this.widget_registry = null;
+        this.widget_layout = null;
     }
+
 
     async buildGrid() {
         console.log("BUILD GRID CALLED");
+        if (!this._enabled)
+            return;
+
+        const generation = this._buildGeneration;
+
 
         const outer_spacing = this.settings.get_int("outer-spacing");
         const inner_spacing = this.settings.get_int("inner-spacing");
@@ -117,8 +133,13 @@ export default class DesktopWidgetsExtension extends Extension {
 
 
         const active_widgets = this.widget_layout.GetActive();
+        console.log(`active: ${JSON.stringify(active_widgets, null, 2)}`)
+
 
         for (const widget of active_widgets) {
+            console.log(`Requested widget ID: ${widget.id}`);
+            console.log(`Registry IDs: ${this.widget_registry.list().join(", ")}`)
+
             const widget_from_reg = this.widget_registry.get(widget.id);
             console.log(widget_from_reg);
 
@@ -167,12 +188,16 @@ export default class DesktopWidgetsExtension extends Extension {
             }
         }
 
+        if (!this._enabled ||
+            generation !== this._buildGeneration) {
+            new_grid.destroy();
+            return;
+        }
+
         if (this.grid) {
-            if (this.grid.get_parent()) {
-                this.grid.get_parent().remove_child(this.grid);
-            }
             this.grid.destroy();
         }
+
 
         this.grid = new_grid;
         Main.layoutManager._backgroundGroup.add_child(this.grid);

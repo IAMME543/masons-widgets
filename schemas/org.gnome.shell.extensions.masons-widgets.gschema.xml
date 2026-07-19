@@ -19,7 +19,7 @@
       <summary>The spacing between the widget grid and the edge of the screen.</summary>
     </key>
     <key name="widget-layout" type="s">
-    <default>'[{"id": "analog-clock","x": 5,"y": 0,"w": 1,"h": 1}]'</default></key>
+    <default>'[{"id": "base-drawing-widget","x": 5,"y": 0,"w": 1,"h": 1}]'</default></key>
 
   </schema>
 </schemalist>

@@ -1,3 +1,5 @@
+"use strict";
+
 export default class WidgetLayout {
     constructor(settings) {
         this.settings = settings;
@@ -7,15 +9,15 @@ export default class WidgetLayout {
     }
 
     AddActive(id, x, y, w, h) {
-        const layout = [
-            {
-                id: id,
-                x: x,
-                y: y,
-                w: w,
-                h: h
-            }
-        ]
+        const layout =
+        {
+            id: id,
+            x: x,
+            y: y,
+            w: w,
+            h: h
+        }
+
         const existing = JSON.parse(this.settings.get_string("widget-layout"))
         existing.push(layout);
         this.settings.set_string("widget-layout", JSON.stringify(existing))

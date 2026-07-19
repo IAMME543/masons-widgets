@@ -1,3 +1,4 @@
+"use strict";
 import GLib from 'gi://GLib';
 import Gio from 'gi://Gio';
 
@@ -14,7 +15,7 @@ export default class WidgetRegistry {
         return this._registry.get(id)
     }
     list() {
-        return this._registry.keys()
+        return Array.from(this._registry.keys())
     }
     async load(id) {
         const entry = this.get(id);
@@ -70,6 +71,10 @@ export default class WidgetRegistry {
         }
 
         enumerator.close(null);
+        // for (const [id, widget] of registry.entries()) {
+        //     console.log(`Registry ID: ${id}`);
+        //     console.log(`Metadata: ${JSON.stringify(widget.metadata)}`);
+        // }
 
         return registry
     }

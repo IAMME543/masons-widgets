@@ -2,7 +2,7 @@
 Does not work. Blur expands outside of the css border radius clip. 
 Need to make a circular mask for clutter effect
 */
-
+"use strict";
 import GObject from 'gi://GObject';
 import AnalogClock from "../Analog-Clock/widget.js";
 import DesktopWidget from "../Base-Desktop-Widget/widget.js";
